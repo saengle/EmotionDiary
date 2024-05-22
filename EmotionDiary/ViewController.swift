@@ -21,19 +21,32 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         titleLabel.text = "감정 다이어리"
-        
+        checkMyData()
         for i in 0...emotionLabelList.count - 1 {
             emotionLabelList[i].tag = i
             emotionLabelList[i].text = emotionList[i]
             emotionButtonList[i].tag = i
+            emotionLabelList[i].text = "\(emotionList[i]) \(countList[i])"
         }
+        
     }
-
+    private func checkMyData() {
+        guard let oldData = UserDefaults.standard.array(forKey: "data") else {
+            print("읽어오는 과정에서 문제가 있습니다.")
+            return
+        }
+        countList = oldData as! [Int]
+        
+        print(#function, countList)
+    }
     
     @IBAction func ImageButtonTapped(_ sender: UIButton) {
         let tag: Int = sender.tag
         countList[tag] += 1
         emotionLabelList[tag].text = "\(emotionList[tag]) \(countList[tag])"
+        UserDefaults.standard.set(countList, forKey: "data")
+        
+        
     }
     
     
