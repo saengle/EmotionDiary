@@ -16,6 +16,22 @@ class ViewController: UIViewController {
     @IBOutlet var emotionButtonList: [UIButton]!
     @IBOutlet var titleLabel: UILabel!
     
+    var countListChange: [Int] {
+        get {
+            guard let oldData = UserDefaults.standard.array(forKey: "data")  else {
+               
+                print("문제가 있는디")
+                return []
+                
+            }
+            countList = oldData as! [Int]
+            setCountNumUI()
+            return countList
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "data")
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,17 +42,9 @@ class ViewController: UIViewController {
             emotionLabelList[i].tag = i
             emotionButtonList[i].tag = i
         }
-        checkMyData()
+        _ = self.countListChange
     }
-    private func checkMyData() {
-        guard let oldData = UserDefaults.standard.array(forKey: "data") else {
-            print("읽어오는 과정에 문제가 있습니다.")
-            setCountNumUI()
-            return
-        }
-        countList = oldData as! [Int]
-        setCountNumUI()
-    }
+   
     
     private func setCountNumUI() {
         for i in 0...emotionList.count - 1 {
@@ -52,8 +60,12 @@ class ViewController: UIViewController {
         let tag: Int = sender.tag
         countList[tag] += 1
         emotionLabelList[tag].text = "\(emotionList[tag]) \(countList[tag])"
-        UserDefaults.standard.set(countList, forKey: "data")
+        //대신에 카운트 체인지 프로퍼티 사용
+//        UserDefaults.standard.set(countList, forKey: "data")
+        countListChange = countList
     }
+   
+ 
     
     @IBAction func deleteButtonClicked(_ sender: UIButton) {
         UserDefaults.standard.removeObject(forKey: "data")
